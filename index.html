@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Mitr', 'Sarabun', sans-serif;
+        }
+
+        body {
+            background-color: #ffcdd2;
+            background-image: radial-gradient(#ff80ab 15%, transparent 16%), radial-gradient(#ff80ab 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(229, 115, 115, 0.3);
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #fff;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #d81b60;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* --- Range Slider Styling --- */
+        .slider-box {
+            background-color: #fff0f3;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #ffccd5;
+        }
+
+        .month-display {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #d81b60;
+            margin-bottom: 10px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ffd8e4;
+            outline: none;
+            accent-color: #ff4081;
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: #e53935;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* --- Photo Slider Styling --- */
+        .photo-slider-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: #f5f5f5;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .slide-img.active-slide {
+            display: block;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            color: #d81b60;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
+        .nav-btn.prev { left: 10px; }
+        .nav-btn.next { right: 10px; }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active-dot {
+            background: #d81b60;
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        /* --- Message Box --- */
+        .message-box {
+            background-color: #fff0f3;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: left;
+            margin-bottom: 20px;
+            border: 1px solid #ffccd5;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .message-title {
+            color: #c2185b;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .message-content {
+            color: #4a4a4a;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* --- Buttons --- */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-next {
+            background-color: #ff4081;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3);
+        }
+
+        .btn-next:hover { background-color: #f50057; transform: translateY(-2px); }
+
+        .btn-prev {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+
+        .btn-prev:hover { background-color: #d6d6d6; }
+
+        .btn-no {
+            background-color: #ff8a80;
+            color: white;
+            position: relative;
+            transition: 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        
+        <!-- STEP 1: ตัวเลื่อนนับเดือน + ระบบตรวจคำตอบ -->
+        <div class="step active" id="step1">
+            <h2>เราคบกันมากี่เดือนแล้วน้า? ❤️</h2>
+            
+            <div class="slider-box">
+                <div class="month-display"><span id="monthValue">1</span> เดือน</div>
+                <input type="range" min="1" max="12" value="1" class="range-slider" id="monthSlider" oninput="updateMonth(this.value)">
+                <div class="error-message" id="errorMsg">ผิดแล้ววว ลองนึกดีๆ ซิ! 😜</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-next" onclick="checkMonthAnswer()">ยืนยัน ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: ข้อความ + สไลด์โชว์รูปภาพ -->
+        <div class="step" id="step2">
+            <h2>ข้อความถึงเด็กอ้วนของเค้า ☁️</h2>
+            
+            <!-- สไลด์โชว์รูปภาพ -->
+            <div class="photo-slider-container">
+                <img class="slide-img active-slide" src="https://i.ibb.co/B26bC0WS/LINE-ALBUM-260906-1.jpg" alt="Photo 1">
+                <img class="slide-img" src="https://i.ibb.co/207P8QNj/LINE-ALBUM-260906-3.jpg" alt="Photo 2">
+                <img class="slide-img" src="https://i.ibb.co/G3NgfRj6/LINE-ALBUM-260906-4.jpg" alt="Photo 3">
+
+                <button class="nav-btn prev" onclick="changeSlide(-1)">❮</button>
+                <button class="nav-btn next" onclick="changeSlide(1)">❯</button>
+
+                <div class="slider-dots">
+                    <span class="dot active-dot" onclick="goToSlide(0)"></span>
+                    <span class="dot" onclick="goToSlide(1)"></span>
+                    <span class="dot" onclick="goToSlide(2)"></span>
+                </div>
+            </div>
+
+            <!-- ข้อความ -->
+            <div class="message-box">
+                <div class="message-title">สุขสันต์วันครบรอบ 7 เดือนนะคนเก่ง ✨</div>
+                <div class="message-content">ขอบคุณอ้วนที่อยู่ด้วยกันมาตลอด เป็นความสุขให้เค้า คอยดูแลช่วยเหลือเค้ามาตลอด ถึงเค้าจะมีวันดื้อ วันที่ไม่น่ารักไปบ้าง แต่ก็ขอบคุณอ้วนมาก ๆ ที่ยังไม่ปล่อยมือเค้า ขอบคุณนะที่พยายามเข้าใจกันในวันที่เราไม่เข้าใจกัน พอนึกถึงวันแรกที่คบกัน ไม่คิดเลยว่าจะรักอ้วนได้มากขนาดนี้ คิดไม่ผิดเลยจริง ๆ ที่ตัดสินใจคบกับอ้วน💖
+
+เค้าสัญญาว่าจะรักและน่ารักกับอ้วนแบบนี้ไปนานๆ เลยนะหมาเด่กอ้วนพุงพลุ้ยของเค้าจุ๊บๆๆๆๆๆ</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-prev" onclick="nextStep(1)">⬅ ย้อนกลับ</button>
+                <button class="btn btn-next" onclick="nextStep(3)">ถัดไป ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: เกมเลือก รัก / ไม่รัก -->
+        <div class="step" id="step3">
+            <h2>รักเค้าไหมเอ่ย? 🥺💖</h2>
+            <div style="font-size: 4rem; margin: 20px 0;">🥰</div>
+            
+            <div class="btn-group" style="min-height: 80px; align-items: center;">
+                <button class="btn btn-next" onclick="nextStep(4)">รักที่สุดเลย! ❤️</button>
+                <button class="btn btn-no" id="noBtn" onmouseover="moveButton()" onclick="moveButton()">ไม่รัก 😜</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: หน้าสุดท้าย -->
+        <div class="step" id="step4">
+            <h2>เย้! รักอ้วนเหมือนกันนะ ❤️</h2>
+            <div style="font-size: 4rem; margin: 20px 0;">จุ๊บๆ 💋</div>
+            <div class="message-box" style="max-height: none; text-align: center;">
+                <div class="message-content">
+                    ขอบคุณที่น่ารักกับเค้าเสมอมานะ อยู่เป็นความสุขให้กันแบบนี้ไปนานๆ เลยนะคนเก่ง 🥰✨
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-prev" onclick="nextStep(1)">เริ่มใหม่อีกรอบ 🔄</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Month Slider & Check Answer Logic ---
+        function updateMonth(val) {
+            document.getElementById('monthValue').innerText = val;
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function checkMonthAnswer() {
+            const currentVal = document.getElementById('monthSlider').value;
+            // ตรวจว่าตอบ 7 เดือนหรือไม่
+            if (parseInt(currentVal) === 7) {
+                document.getElementById('errorMsg').style.display = 'none';
+                nextStep(2);
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        // --- Photo Slider Logic ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide-img');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(index) {
+            if (index >= slides.length) currentSlide = 0;
+            else if (index < 0) currentSlide = slides.length - 1;
+            else currentSlide = index;
+
+            slides.forEach(slide => slide.classList.remove('active-slide'));
+            dots.forEach(dot => dot.classList.remove('active-dot'));
+
+            slides[currentSlide].classList.add('active-slide');
+            dots[currentSlide].classList.add('active-dot');
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        // --- Step Navigation Logic ---
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step' + stepNumber).classList.add('active');
+        }
+
+        // --- Runaway No Button Logic ---
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * 160 - 80;
+            const y = Math.random() * 100 - 50;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+    </script>
+</body>
+</html>
